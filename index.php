@@ -1230,26 +1230,14 @@ function GetOldestTrackFilePath()
     if (isset($_GET['dashboard']) && $_GET['dashboard']) {
     ?>
     <script>
-        function ready(fn) {
-            if (document.readyState != 'loading') {
-                fn();
-            } else if (document.addEventListener) {
-                document.addEventListener('DOMContentLoaded', fn);
-            } else {
-                document.attachEvent('onreadystatechange', function () {
-                    if (document.readyState != 'loading')
-                        fn();
-                });
-            }
-        }
-        ready(function() {
+        setTimeout(() => {
             document.getElementById("playlistContainer")
                 .scrollIntoView({
                     behavior: "smooth",
                     block: "start",
                     inline: "nearest"
                 });
-        });
+            }, 1000);
     </script>
     <?php
     }
