@@ -36,7 +36,8 @@ $d = $params["d"];
 //	to send commands to the music player. Currently using base64, but could be whatever.
 
 
-
+session_start();
+$admin = isset($_SESSION['admin']) && $_SESSION['admin'];
 
 if($op == "getState")
 {
@@ -62,6 +63,9 @@ if($op == "getState")
 
 else if($op == "setVolume")
 {
+    if (!$admin) {
+        die;
+    }
 	$volumeVal = intval($d);
 
 	if($volumeVal<0)
@@ -75,6 +79,9 @@ else if($op == "setVolume")
 
 else if($op == "seek")
 {
+    if (!$admin) {
+        die;
+    }
 	$trackName = trim($d[0]);
 	$pct = intval( round($d[1] * 100) );
 
@@ -107,6 +114,9 @@ else if($op == "seek")
 
 else if($op == "selectTrack")
 {
+    if (!$admin) {
+        die;
+    }
 	$trackName = trim($d);
 	$trackNameDecoded = base64_decode($trackName);
 
@@ -140,6 +150,9 @@ else if($op == "selectTrack")
 
 else if($op == "deleteTrack")
 {
+    if (!$admin) {
+        die;
+    }
 	$trackName = trim($d);
 	$trackNameDecoded = base64_decode($trackName);
 
