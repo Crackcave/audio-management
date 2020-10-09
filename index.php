@@ -587,6 +587,11 @@ function GetOldestTrackFilePath()
 			setInterval(PeriodicRefreshCurrentTrack, 1000);
 		}
 
+		function isAdmin()
+        {
+            return <?php echo($isAdmin ? 'true' : 'false'); ?>;
+        }
+
 		function Refresh()
 		{
 			Cmd("getState", null);
@@ -899,7 +904,12 @@ function GetOldestTrackFilePath()
 				//Label div.
 				html += '<div class="' + classStr + '"';
 
-				if(!isCurrent)
+				if (!isAdmin())
+                {
+                    html += ' style="cursor: default;"';
+                }
+
+				if(!isCurrent && isAdmin())
 				{
 					html += ' onclick="OnSelectTrack(' + "\'" + trackNameEnc + "\'" + ')';
 				}
@@ -922,7 +932,11 @@ function GetOldestTrackFilePath()
 					html += '<div>';
 					html += '<input id="seekControl" type="range" min="0" max="'
 							+ totalSecs + '" value="' + elapsedSecs
-							+ '" step="1" oninput="OnSeekScrub(value)" onmouseup="OnSeekCommit(value)" ontouchend="OnSeekCommit(value)" style="width:100%; margin-top:15px;" />';
+							+ '" step="1" oninput="OnSeekScrub(value)" onmouseup="OnSeekCommit(value)" ontouchend="OnSeekCommit(value)" style="width:100%; margin-top:15px;"';
+					if (!isAdmin()) {
+					    html += ' disabled';
+                    }
+					html += ' />';
 					html += '</div>';
 
 					html += '<div style="text-align:right;">';
@@ -950,18 +964,18 @@ function GetOldestTrackFilePath()
 
 			html += 		'</td>';
 			*/
+            if (isAdmin()) {
+                html += 		'<td style="width:60px">';
 
-			html += 		'<td style="width:60px">';
+                    //Delete div.
+                    html += '<div style="text-align: center;" class="trackOption"';
+                    html += ' onclick="OnDeleteTrack(' + "\'" + trackNameEnc + "\'" + ')';
+                    html += '">';
+                    html += 'x';
+                    html += '</div>';
 
-				//Delete div.
-				html += '<div style="text-align: center;" class="trackOption"';
-				html += ' onclick="OnDeleteTrack(' + "\'" + trackNameEnc + "\'" + ')';
-				html += '">';
-				html += 'x';
-				html += '</div>';
-
-			html += 		'</td>';
-
+                html += 		'</td>';
+            }
 
 			html += 	'</tr>';
 			html += '</table>';
@@ -1192,7 +1206,9 @@ function GetOldestTrackFilePath()
 			loading...
 		</div>
 
-
+        <?php if (!$isAdmin) { ?>
+            <div style="display: none">
+        <?php } ?>
 		<!-- volume control -->
 		<div id="volumeContainer" style="display:none;">
 
@@ -1205,13 +1221,15 @@ function GetOldestTrackFilePath()
 			</div>
 
 		</div>
-
+        <?php if (!$isAdmin) { ?>
+            </div>
+        <?php } ?>
 
 		<!-- search box -->
 		<div id="searchContainer" style="text-align: center; display:none;">
 			<form action="#" onsubmit="OnSubmitQuery(); return false;">
 				<input id="queryInput" type="text" value="" class="searchInput" style="width:65%;"/>
-				<input type="submit" value="go" class="searchInput" />
+				<input type="submit" value="Search Youtube & Add To Playlist" class="searchInput" />
 			</form>
 		</div>
 
@@ -1219,7 +1237,7 @@ function GetOldestTrackFilePath()
 		<!-- playlist -->
 		<div id="playlistContainer" style="display:none;">
 			<div>
-				playlist
+				Playlist
 			</div>
 			<div id="playlist">
 			</div>
@@ -1238,7 +1256,7 @@ function GetOldestTrackFilePath()
 
 		<!-- footer -->
 		<div id="footerContainer" style="text-align: center; font-size: 12px;">
-			JKBOX | <a href="https://kylegabler.com/RaspberryPiJukebox">How to Build a Jukebox With a Raspberry Pi</a>
+			Weltistrasse 34 | <a href="login.php">Admin Login</a>
 		</div>
 
 	</div>
