@@ -6,8 +6,8 @@
 // CONFIG
 //-----------------------------------------------------------
 
-$MUSIC_DIR_PATH				= dirname(__FILE__) . "/tracks";	// /home/pi/jkbox/tracks
-$TMP_PATH					= dirname(__FILE__) . "/tmp";		// /home/pi/jkbox/tmp
+$MUSIC_DIR_PATH				= __DIR__ . "/tracks";	// /home/pi/jkbox/tracks
+$TMP_PATH					= __DIR__ . "/tmp";		// /home/pi/jkbox/tmp
 $MUSIC_DIR_MAX_MEGABYTES	= 500;
 set_time_limit( 60 );		//seconds this script is allowed to run
 
@@ -37,7 +37,7 @@ $d = $params["d"];
 
 
 session_start();
-$admin = isset($_SESSION['admin']) && $_SESSION['admin'];
+$isAdmin = isset($_SESSION['admin']) && $_SESSION['admin'];
 
 if($op == "getState")
 {
@@ -63,8 +63,8 @@ if($op == "getState")
 
 else if($op == "setVolume")
 {
-    if (!$admin) {
-        die;
+    if (!$isAdmin) {
+        NotAuthorizedException();
     }
 	$volumeVal = intval($d);
 
@@ -79,8 +79,8 @@ else if($op == "setVolume")
 
 else if($op == "seek")
 {
-    if (!$admin) {
-        die;
+    if (!$isAdmin) {
+        NotAuthorizedException();
     }
 	$trackName = trim($d[0]);
 	$pct = intval( round($d[1] * 100) );
@@ -114,8 +114,8 @@ else if($op == "seek")
 
 else if($op == "selectTrack")
 {
-    if (!$admin) {
-        die;
+    if (!$isAdmin) {
+        NotAuthorizedException();
     }
 	$trackName = trim($d);
 	$trackNameDecoded = base64_decode($trackName);
@@ -150,8 +150,8 @@ else if($op == "selectTrack")
 
 else if($op == "deleteTrack")
 {
-    if (!$admin) {
-        die;
+    if (!$isAdmin) {
+        NotAuthorizedException();
     }
 	$trackName = trim($d);
 	$trackNameDecoded = base64_decode($trackName);
@@ -254,6 +254,12 @@ function Respond($data)
 {
 	echo( json_encode($data) );
 	exit();
+}
+
+function NotAuthorizedException()
+{
+    header('HTTP/1.0 403 Forbidden');
+    die('You are not allowed to access this file.');
 }
 
 function GetPlaylistTracks()

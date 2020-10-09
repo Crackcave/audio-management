@@ -1,4 +1,4 @@
 #!/bin/sh
 
-cd /root-dir
+cd /var/www
 exec "$@"
