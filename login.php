@@ -3,6 +3,7 @@ include_once 'session.php';
 if (isset($_GET['logout']) && $_GET['logout']) {
     $_SESSION['admin'] = false;
 }
+$loginFailed = false;
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = $_POST['username'] ?: null;
     $password = $_POST['password'] ?: null;
@@ -12,7 +13,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $rememberMe = md5(uniqid(mt_rand(), true));
         setcookie('_remember_me', $rememberMe, time() + (60 * 60 * 24 * 365));
         file_put_contents(__DIR__.'/remember_me/'.$rememberMe, '1');
+        header("Location: index.php");
+        exit();
     }
+    $loginFailed = true;
 }
 
 ?>
@@ -63,13 +67,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             display: inline-block;
             font-size: 16px;
             cursor: pointer;
+            width: 100%;
         }
     </style>
 </head>
 <body>
 <div class="background">
     <div class="content">
+        <p><a href="index.php">Back</a></p>
         <form method="post">
+            <?php if ($loginFailed) { ?><p style="color: red;">Wrong password</p><?php } ?>
             <label for="username">
                 Username:
             </label>
