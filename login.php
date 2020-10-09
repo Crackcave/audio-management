@@ -41,7 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         .content {
             width: 200px;
-            height: 200px;
+            height: 250px;
 
             position:absolute;
             left:0; right:0;
@@ -74,7 +74,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <body>
 <div class="background">
     <div class="content">
-        <p><a href="index.php">Back</a></p>
         <form method="post">
             <?php if ($loginFailed) { ?><p style="color: red;">Wrong password</p><?php } ?>
             <label for="username">
@@ -89,6 +88,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <br /><br />
             <input class="button" type="submit" value="Login" />
         </form>
+        <p><a href="index.php">Back</a></p>
     </div>
 </div>
 
