@@ -1,14 +1,17 @@
 <?php
-session_start();
+include_once 'session.php';
 if (isset($_GET['logout']) && $_GET['logout']) {
     $_SESSION['admin'] = false;
 }
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = $_POST['username'] ?: null;
     $password = $_POST['password'] ?: null;
-    $hashed = hash('sha512', $password);
-    if ($username === 'admin' && $hashed === 'a99249c0ff04a8bceac42025d8609fdf65a3060378f8dbfc49ebed6289bd853aa453cc66116c1f804d78c92aad7c6d931bac744f227942bed4676a205f654d5d') {
+    $secret = trim(file_get_contents(__DIR__.'/secret'));
+    if ($username === 'admin' && $secret === $password) {
         $_SESSION['admin'] = true;
+        $rememberMe = md5(uniqid(mt_rand(), true));
+        setcookie('_remember_me', $rememberMe, time() + (60 * 60 * 24 * 365));
+        file_put_contents(__DIR__.'/remember_me/'.$rememberMe, '1');
     }
 }
 

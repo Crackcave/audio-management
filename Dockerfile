@@ -24,7 +24,10 @@ RUN chmod +x /usr/local/bin/entrypoint.sh
 
 ADD index.php .
 ADD login.php .
-RUN mkdir tracks && mkdir tmp && chown www-data:www-data tracks && chown www-data:www-data tmp
+ADD session.php .
+ADD secret .
+RUN mkdir tracks && mkdir tmp && chown www-data:www-data tracks && chown www-data:www-data tmp \
+    && mkdir remember_me
 
 ENTRYPOINT ["entrypoint.sh"]
 CMD ["php", "-S", "0.0.0.0:8000"]

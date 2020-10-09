@@ -36,8 +36,7 @@ $d = $params["d"];
 //	to send commands to the music player. Currently using base64, but could be whatever.
 
 
-session_start();
-$isAdmin = isset($_SESSION['admin']) && $_SESSION['admin'];
+include_once 'session.php';
 
 if($op == "getState")
 {
