@@ -1246,7 +1246,7 @@ function GetOldestTrackFilePath()
 		<!-- recent tracks -->
 		<div id="recentContainer" style="display:none;">
 			<div>
-				recent
+				Recent
 			</div>
 			<div id="recent">
 			</div>
