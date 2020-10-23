@@ -181,7 +181,17 @@ else if($op == "deleteTrack")
 
 	Respond("track not found: " . $trackNameDecoded);
 }
-
+else if ($op == "search")
+{
+    $queryStr = trim($d);
+    $link = 'https://www.googleapis.com/youtube/v3/search?' . http_build_query([
+        'key' => 'AIzaSyAtCHgOhzz7qwzEH9attHjOWZQOh1AedaA',
+        'q' => $queryStr,
+        'part' => 'snippet',
+    ]);
+    $found = json_decode(file_get_contents($link), true);
+    Respond($found);
+}
 else if($op == "fetch")
 {
 	$queryStr = trim($d);
@@ -389,8 +399,8 @@ function Fetch($searchStr, &$debugData)
 	//Download audio of first search result from youtube.
 	//I was going to add more sources, but this seems totally sufficient.
 	$cmd =	"youtube-dl"
-			. " -f 'bestaudio'"
-			. " " . escapeshellarg("ytsearch1:" . $searchStr)
+			. " -f --verbose 'bestaudio'"
+			. " " . escapeshellarg($searchStr)
 			. " --no-playlist --ignore-errors --no-color --max-downloads 1"
 			. " --no-call-home --no-progress --restrict-filenames"
 			. " --no-cache-dir"
@@ -641,10 +651,25 @@ function GetOldestTrackFilePath()
 			return -1;
 		}
 
-		function OnSubmitQuery()
+		function OnSearchQuery()
+        {
+            var queryStr = document.querySelector('#queryInput').value.trim();
+            document.querySelector('#queryInput').value = "";
+            if(!queryStr)
+                {return;}
+            //Replace any curly "smart" quotes with plain straight quotes.
+            queryStr = queryStr
+                .replace(/[\u2018\u2019]/g, "'")
+                .replace(/[\u201C\u201D]/g, '"');
+            //Replace any other non printable ascii chars with spaces.
+            queryStr = queryStr.replace(/[^ -~]+/g, " ");
+            Cmd("search", queryStr);
+        }
+
+		function OnSubmitQuery(queryStr)
 		{
-			var queryStr = document.querySelector('#queryInput').value.trim();
 			document.querySelector('#queryInput').value = "";
+			document.querySelector('#queryResult').innerHTML = '';
 			if(!queryStr)
 				{return;}
 
@@ -791,6 +816,16 @@ function GetOldestTrackFilePath()
 			}
 		}
 
+		function UpdateSearch(data)
+        {
+            var innerHtml = '';
+            data.items.forEach((item) => {
+                innerHtml += '<button onclick="OnSubmitQuery(\''+item.id.videoId+'\')" style="margin-right: 5px;" class="searchInput">'+item.snippet.title+'</button>';
+            });
+            const queryResult = document.querySelector('#queryResult');
+            queryResult.innerHTML = innerHtml;
+        }
+
 		function Cmd(op, data)
 		{
 
@@ -807,6 +842,11 @@ function GetOldestTrackFilePath()
 						MODEL = data;
 						OnModelUpdate();
 					}
+
+					else if(op=="search")
+					{
+					    UpdateSearch(data);
+                    }
 
 					else if(op=="selectTrack")
 					{
@@ -1096,7 +1136,7 @@ function GetOldestTrackFilePath()
 				padding: 2px 10px 2px;
 				margin: 5px 0px 0px;
 				border-radius: 5px;
-
+                cursor: pointer;
 				color: #eeeeee;
 				background-color: #555555;
 			}
@@ -1226,11 +1266,15 @@ function GetOldestTrackFilePath()
 
 		<!-- search box -->
 		<div id="searchContainer" style="text-align: center; display:none;">
-			<form action="#" onsubmit="OnSubmitQuery(); return false;">
+			<form action="#" onsubmit="OnSearchQuery(); return false;">
 				<input id="queryInput" type="text" value="" class="searchInput" style="width:65%;"/>
-				<input type="submit" value="Search Youtube & Add To Playlist" class="searchInput" />
+				<input type="submit" value="Search Youtube" class="searchInput" />
 			</form>
 		</div>
+
+        <div id="queryResult">
+
+        </div>
 
 
 		<!-- playlist -->
