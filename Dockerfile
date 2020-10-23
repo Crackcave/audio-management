@@ -26,6 +26,7 @@ ADD index.php .
 ADD login.php .
 ADD session.php .
 ADD secret .
+ADD youtube_api_v3 .
 RUN mkdir tracks && mkdir tmp && chown www-data:www-data tracks && chown www-data:www-data tmp \
     && mkdir remember_me
 

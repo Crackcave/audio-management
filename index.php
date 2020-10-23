@@ -183,9 +183,10 @@ else if($op == "deleteTrack")
 }
 else if ($op == "search")
 {
+    $apiKey = trim(file_get_contents(__DIR__.'/youtube_api_v3'));
     $queryStr = trim($d);
     $link = 'https://www.googleapis.com/youtube/v3/search?' . http_build_query([
-        'key' => 'AIzaSyAtCHgOhzz7qwzEH9attHjOWZQOh1AedaA',
+        'key' => $apiKey,
         'q' => $queryStr,
         'part' => 'snippet',
 	'type' => 'video',
