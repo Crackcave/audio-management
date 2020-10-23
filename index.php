@@ -189,7 +189,7 @@ else if ($op == "search")
         'key' => $apiKey,
         'q' => $queryStr,
         'part' => 'snippet',
-	'type' => 'video',
+        'type' => 'video',
     ]);
     $found = json_decode(file_get_contents($link), true);
     Respond($found);
@@ -656,16 +656,20 @@ function GetOldestTrackFilePath()
 		function OnSearchQuery()
         {
             var queryStr = document.querySelector('#queryInput').value.trim();
-            document.querySelector('#queryInput').value = "";
-            if(!queryStr)
+            if (queryStr.startsWith('http')) {
+                OnSubmitQuery(queryStr);
+            } else {
+                document.querySelector('#queryInput').value = "";
+                if(!queryStr)
                 {return;}
-            //Replace any curly "smart" quotes with plain straight quotes.
-            queryStr = queryStr
-                .replace(/[\u2018\u2019]/g, "'")
-                .replace(/[\u201C\u201D]/g, '"');
-            //Replace any other non printable ascii chars with spaces.
-            queryStr = queryStr.replace(/[^ -~]+/g, " ");
-            Cmd("search", queryStr);
+                //Replace any curly "smart" quotes with plain straight quotes.
+                queryStr = queryStr
+                    .replace(/[\u2018\u2019]/g, "'")
+                    .replace(/[\u201C\u201D]/g, '"');
+                //Replace any other non printable ascii chars with spaces.
+                queryStr = queryStr.replace(/[^ -~]+/g, " ");
+                Cmd("search", queryStr);
+            }
         }
 
 		function OnSubmitQuery(queryStr)
