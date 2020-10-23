@@ -188,6 +188,7 @@ else if ($op == "search")
         'key' => 'AIzaSyAtCHgOhzz7qwzEH9attHjOWZQOh1AedaA',
         'q' => $queryStr,
         'part' => 'snippet',
+	'type' => 'video',
     ]);
     $found = json_decode(file_get_contents($link), true);
     Respond($found);
@@ -1131,7 +1132,6 @@ function GetOldestTrackFilePath()
 
 		.searchInput {
 				font-size: 25px;
-				height: 40px;
 				border: 0px;
 				padding: 2px 10px 2px;
 				margin: 5px 0px 0px;
