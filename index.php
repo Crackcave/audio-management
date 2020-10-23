@@ -399,7 +399,7 @@ function Fetch($searchStr, &$debugData)
 	//Download audio of first search result from youtube.
 	//I was going to add more sources, but this seems totally sufficient.
 	$cmd =	"youtube-dl"
-			. " -f --verbose 'bestaudio'"
+			. " --verbose -f 'bestaudio'"
 			. " " . escapeshellarg($searchStr)
 			. " --no-playlist --ignore-errors --no-color --max-downloads 1"
 			. " --no-call-home --no-progress --restrict-filenames"
